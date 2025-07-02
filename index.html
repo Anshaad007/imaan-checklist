@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Imaan Daily Checklist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(to right, #e0f7fa, #fce4ec);
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 700px;
+        background: #ffffffcc;
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #2e7d32;
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+
+      h3 {
+        text-align: center;
+        color: #37474f;
+        font-weight: 400;
+        margin-bottom: 25px;
+      }
+
+      .task {
+        display: flex;
+        align-items: center;
+        background-color: #f1f8e9;
+        border-radius: 10px;
+        padding: 10px 15px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .task:hover {
+        background-color: #dcedc8;
+      }
+
+      .task input {
+        margin-right: 12px;
+        transform: scale(1.3);
+      }
+
+      .task label {
+        font-size: 16px;
+        color: #455a64;
+      }
+
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+      }
+
+      button {
+        background-color: #8bd5e9;
+        color: rgb(0, 0, 0);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #388e3c;
+      }
+
+      .reset-button {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🕌 Imaan Booster - Day <span id="day-number">1</span></h1>
+      <h3 id="daily-goal">Loading daily challange.</h3>
+
+      <div id="checklist"></div>
+
+      <div class="nav-buttons">
+        <button onclick="prevDay()">⬅️ Previous</button>
+        <button onclick="nextDay()">Next ➡️</button>
+      </div>
+
+      <div class="reset-button">
+        <button onclick="resetToday()">🔄 Reset Today's Checklist</button>
+      </div>
+    </div>
+
+    <script>
+      const dailyGoals = [
+        "Pray all 5 salah on time",
+        "Read Quran 10 minutes after Fajr",
+        "Say Astaghfirullah 100x today",
+        "Lower your gaze at college today",
+        "Watch 1 Islamic video after Asr",
+        "Do evening Adhkar before sleeping",
+        "Thank Allah for 3 things at night",
+        "Avoid gossip and useless talk",
+        "Reflect on your purpose today",
+        "Help someone without being asked",
+        "Send 100 salawat on the Prophet ﷺ",
+        "Make sincere du'a after each prayer",
+        "Fast or skip distractions today",
+        "Make istighfar 50x after Maghrib",
+        "Memorize a du’a today",
+        "Speak kindly all day",
+        "Avoid music — listen to Quran",
+        "Read one Seerah story",
+        "Pray 2 rakah Sunnah mindfully",
+        "Say Bismillah before every task",
+        "Be kind to your parents today",
+        "Pray Fajr and stay awake",
+        "Avoid all arguments today",
+        "Write a du’a for yourself",
+        "Recite Surah Mulk before sleep",
+        "Make du’a before Maghrib (Friday)",
+        "Reflect on one heart change",
+        "Plan a long-term good habit",
+        "Wake for Tahajjud if possible",
+        "Thank Allah for your progress",
+      ];
+
+      const staticChecklist = [
+        "Thahajud",
+        "Fajr ",
+        "Quran reading",
+        "Dhuhr ",
+        "Asr ",
+        "Islamic reminder video/reading",
+        "Maghrib",
+        "Isha",
+        "Adhkar (post-Isha)",
+        "Sleep by 10 PM",
+      ];
+
+      let currentDay = parseInt(localStorage.getItem("currentDay")) || 1;
+
+      function loadChecklist(day) {
+        document.getElementById("day-number").innerText = day;
+        document.getElementById("daily-goal").innerText = dailyGoals[day - 1];
+
+        const checklistDiv = document.getElementById("checklist");
+        checklistDiv.innerHTML = "";
+
+        staticChecklist.forEach((task, index) => {
+          const checkboxId = `day${day}_task${index}`;
+          const isChecked = localStorage.getItem(checkboxId) === "true";
+
+          const taskDiv = document.createElement("div");
+          taskDiv.className = "task";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = isChecked;
+          checkbox.onchange = () => {
+            localStorage.setItem(checkboxId, checkbox.checked);
+          };
+
+          const label = document.createElement("label");
+          label.textContent = task;
+
+          taskDiv.appendChild(checkbox);
+          taskDiv.appendChild(label);
+          checklistDiv.appendChild(taskDiv);
+        });
+
+        localStorage.setItem("currentDay", day);
+      }
+
+      function nextDay() {
+        if (currentDay < 30) {
+          currentDay++;
+          loadChecklist(currentDay);
+        }
+      }
+
+      function prevDay() {
+        if (currentDay > 1) {
+          currentDay--;
+          loadChecklist(currentDay);
+        }
+      }
+
+      function resetToday() {
+        staticChecklist.forEach((_, index) => {
+          const checkboxId = `day${currentDay}_task${index}`;
+          localStorage.removeItem(checkboxId);
+        });
+        loadChecklist(currentDay);
+      }
+
+      // Initial load
+      loadChecklist(currentDay);
+    </script>
+  </body>
+</html>
